@@ -6,6 +6,7 @@ import log = require("../log/log");
 var socket = require("socket.io");
 
 var emitter = new events.EventEmitter();
+var io: any;
 
 /**
  * @class EventCentral.
@@ -15,7 +16,15 @@ module EventCentral {
     "use strict";
     // I felt like trying out something different and I created a centralized event handler 
 
-    var io: any;
+    var eventHooks: { [eventName: string]: any[]; } = { };
+
+    var addEventInit = (eventName: string, eventHandlerFunction: any) => {
+        if (eventHooks[eventName] === undefined) {
+            eventHooks[eventName] = [ ];
+        }
+
+        eventHooks[eventName].push(eventHandlerFunction);
+    };
 
     /** 
      * Initializes the event handling central and starts listening for socket messages.
@@ -32,6 +41,18 @@ module EventCentral {
         io.on("connection", (socket: any) => {
           log.debug("Socket connected to server.");
         });
+
+        // we have potentially collected socket events that need to be attached to the io object after it has been
+        // created so the other modules can start receiving messages
+        var eventNames: string[] = Object.keys(eventHooks);
+
+        if (eventNames.length > 0) {
+            log.info("Attaching buffered 'on' socket events in place... ");
+            eventNames.forEach((key: string) => { 
+                log.info("socket.on event handler attached.", { socketEventName: key });
+                eventHooks[key].forEach(onEventCallback => { io.on(key, onEventCallback) });
+            });
+        }
     }
 
     /** 
@@ -41,12 +62,23 @@ module EventCentral {
      */
     export function addSocketEventListener(eventName: string, eventHandlerFunction: any) {
         if (!io) {
-            log.debug("Socket.io not initiazed");
-            // making sure the storage is working as it should
-            throw "Socket.io not initialized. Call init(server).";
+            console.log("JSON.stringify log " + log.debug + ", " + JSON.stringify(log.debug));
+            log.debug("Socket.io not initiazed. Buffering event add.", { eventName: eventName });
+            addEventInit(eventName, eventHandlerFunction);
+            return;
         }
 
         io.on(eventName, eventHandlerFunction);
+        log.info("Registered handler for socket.event", { eventName: eventName });
+    }
+
+    /** 
+     * Adds a new event listener for an EventEmitter event.
+     * @param eventName {string} Name of the socket event to listen for.
+     * @param eventHandlerFunction {any} Callback to call once the event triggers
+     */
+    export function addEventListener(eventName: string, eventHandlerFunction: any) {
+        emitter.on(eventName, eventHandlerFunction);
         log.info("Registered handler for event", { eventName: eventName });
     }
 
@@ -56,6 +88,27 @@ module EventCentral {
     export function removeSocketEventListener(eventName: string, eventHandlerFunction: any) {
 
     }
+
+    /** 
+     * Removes a specific event listener
+     */
+    export function removeEventListener(eventName: string, eventHandlerFunction: any) {
+    }
+
+    /**
+     * Emits message through the socket.io to client side.
+     */
+    export function emitSocket(eventName: string, params: any) {
+        io.emit(eventName, params);
+    }
+
+    /**
+     * Emits message through the encapsulated event emitter and stays on server side.
+     */
+    export function emit(eventName: string, params: any) {
+        emitter.emit(eventName, params);
+    }
 }
+
 
 export = EventCentral;

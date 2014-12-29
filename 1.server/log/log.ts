@@ -1,6 +1,7 @@
 "use strict";
 
 import bunyan = require("bunyan");
+import eventCentral = require("../event-central/event-central");
 
 // creating logger for the normal aikamaatti issues
 var log = bunyan.createLogger({
@@ -16,6 +17,19 @@ var log = bunyan.createLogger({
 module Log {
   "use strict";
   
+  /** 
+   * Debug log.
+   * @params message {string} Message to log.
+   * @params argument {any} Optional. 
+   */
+  export function debug(message: string, meta?: { [fieldName: string]: any; }) {
+    if (meta) {
+      log.debug(meta, message); 
+    } else {
+      log.debug(message);
+    }
+  }
+
   /** 
    * Info log.
    * @params message {string} Message to log
@@ -54,19 +68,6 @@ module Log {
       log.error(message);
     }
   }
-
-  /** 
-   * Debug log.
-   * @params message {string} Message to log.
-   * @params argument {any} Optional. 
-   */
-  export function debug(message: string, meta?: { [fieldName: string]: any; }) {
-    if (meta) {
-      log.debug(meta, message); 
-    } else {
-      log.debug(message);
-    }
-  }
-}
+};
 
 export = Log;
