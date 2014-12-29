@@ -1,0 +1,29 @@
+{
+  "name": "slush-lolly",
+  "version": "0.0.0",
+  "authors": [
+    "Mika Turunen <mika.turunen@ymail.com>"
+  ],
+  "description": "Slush generator called slush-lolly that works as an easy boilerplate for web application development.",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": false,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "2.client/bower/",
+    "test",
+    "tests",
+    "release"
+  ],
+  "dependencies": {
+    "angular": "~1.3.1",
+    "angular-ui-router": "~0.2.11",
+    "angular-route": "~1.3.1",
+    "angular-bootstrap": "~0.11.2",
+    "angular-socket-io": "~0.6.1"
+  }
+}

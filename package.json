@@ -1,0 +1,36 @@
+{
+  "name": "Aikamaatti",
+  "version": "0.0.1",
+  "description": "Aikamaatti is a common time reservation/booking system.",
+  "author": "Mika Turunen <mika.turunen@ymail.com>",
+  "bugs": {},
+  "keywords": [
+    "aikamaatti",
+    "time",
+    "reservation",
+    "booking"
+  ],
+  "dependencies": {
+    "express": "4.9.8",
+    "mongoose": "^3.8.18",
+    "socket.io": "^1.2.1",
+    "bunyan": "^1.2.3"
+  },
+  "devDependencies": {
+    "gulp": "3.8.8",
+    "gulp-typescript": "2.1.0",
+    "event-stream": "3.1.7",
+    "bower": "^1.3.12",
+    "gulp-jade": "^0.9.0",
+    "gulp-tslint": "^1.3.1",
+    "gulp-install": "^0.2.0",
+    "gulp-uglify": "^1.0.1",
+    "run-sequence": "^1.0.1",
+    "gulp-sourcemaps": "^1.2.8"
+  },
+  "scripts": {},
+  "private": false,
+  "analyze": false,
+  "license": "MIT",
+  "NOTE": "This module is as free as freedom can be. Use it, break it, do what ever you want with it - have fun!"
+}
