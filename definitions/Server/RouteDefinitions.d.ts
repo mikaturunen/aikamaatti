@@ -22,7 +22,6 @@ interface HttpRouteDefinition {
 interface SocketRouteDefinition {
   /** 
    * Function for initializing and telling Socket server about the socket routes.
-   * @param socket {any} Socket server.
    */
-  init: (socket: any) => void;
+  init: () => void;
 }

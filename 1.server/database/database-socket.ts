@@ -1,11 +1,15 @@
+"use strict";
+
 import database = require("database");
+import eventCentral = require("../event-central/event-central");
 
 /** 
  * @module DatabaseSocket
  * Contains all socket routes for Database accessing. Implements SocketRouteDefinition.
  */
 module DatabaseSocket {
-  var events: any = {
+  "use strict";
+  var events = {
     /**
      * Hello world socket event message
      */
@@ -17,14 +21,11 @@ module DatabaseSocket {
     }
   };
 
-  // TODO typedefinitions for socket.io
   /** 
    * Hooks set of Database related socket messages in place.
-   * @param io {any} socket.io object.
    */
-  export function init(io: any) {
-    // Example of dynamically hooking the socket messages in place in slush-lolly
-    io.on(events.helloWorld.message, events.helloWorld.fn);
+  export function init() {
+    eventCentral.addSocketEventListener(events.helloWorld.message, events.helloWorld.fn);
   }
 }
 

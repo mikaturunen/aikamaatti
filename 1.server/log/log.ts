@@ -1,3 +1,5 @@
+"use strict";
+
 import bunyan = require("bunyan");
 
 // creating logger for the normal aikamaatti issues
@@ -12,6 +14,8 @@ var log = bunyan.createLogger({
  * Module for handling logging in the node application. Internally uses Bunyan for managing logging behavior.
  */
 module Log {
+  "use strict";
+  
   /** 
    * Info log.
    * @params message {string} Message to log

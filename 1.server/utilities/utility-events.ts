@@ -1,3 +1,5 @@
+"use strict";
+
 import log = require("../log/log")
 
 /** 
@@ -6,6 +8,8 @@ import log = require("../log/log")
  * development events.
  */
 module UtilityEvents {
+  "use strict";
+
   var constants = {
     productionVariable: "NODE_ENV"
   };

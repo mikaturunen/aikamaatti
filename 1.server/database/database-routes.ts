@@ -1,3 +1,4 @@
+"use strict";
 
 import database = require("database");
 
@@ -6,6 +7,8 @@ import database = require("database");
  * Contains all HTTP routes for Database accessing. Implements HttpRouteDefinitions.
  */
 module DatabaseRoutes {
+  "use strict";
+  
   var routes: any = {
     /** 
      * GET hello world example

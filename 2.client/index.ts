@@ -1,8 +1,11 @@
+"use strict";
 
 /**
  * Main angular module that initially configures routes in place and maintains order.
  */
 module Aikamaatti {
+  "use strict";
+  
   /**
    * Configuration function for main module. 
    */ 
@@ -22,6 +25,14 @@ module Aikamaatti {
       });
   };
 
+  /** 
+   * List of modules that are also dependencies and need to be created through angular.module
+   */ 
+  export var modules = [
+    "socket-service",
+    "reservations"
+  ]; 
+
   /**
    * Module details for Angular to consume.
    */ 
@@ -30,11 +41,10 @@ module Aikamaatti {
     configFunction: config,
     // list of dependencies Aikamaatti application depends on.
     dependencies: [ 
-      // outside dependencies (through bower)
-      "ui.router", "ui.bootstrap", "btford.socket-io", 
-      // application specific dependencies
-      "reservations" 
-    ]
+        // outside dependencies (through bower)
+        "ui.router", "ui.bootstrap", "btford.socket-io", 
+      ]
+      .concat(modules)
   };
 };
 
@@ -50,5 +60,4 @@ angular
 // rationale: this js files gets included first -> declare all modules and initiate them
 //            then in other js files we just call the modules and declare controllers, services and such for the
 //            modules.
-angular
-  .module("reservations", [ ]);
+Aikamaatti.modules.forEach(angularModule => angular.module(angularModule, []));

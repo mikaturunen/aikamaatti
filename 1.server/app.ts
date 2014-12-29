@@ -3,11 +3,10 @@ import utilityEvents = require("./utilities/utility-events");
 utilityEvents.hook();
 
 import log = require("./log/log");
+import eventCentral = require("./event-central/event-central");
 import express = require("express");
 import path = require("path");
 
-// TODO type definitions/imports 
-var socket = require("socket.io");
 
 // Example of adding dynamic http routes
 import databaseRoutes = require("./database/database-routes");
@@ -31,14 +30,8 @@ var server = app.listen(3000, "127.0.0.1", () => {
 	log.debug("Server running.", { port: server.address().port });
 });
 
-// STARTING THE SOCKET SERVER
-// TODO socket.io type definitions
-var io: any = socket(server);
-io.on("connection", (socket: any) => {
-  log.debug("Socket connected to server.");
-});
-
+eventCentral.init(server);
 // applying dynamic routes to the socket server
-databaseSockets.init(io);
+databaseSockets.init();
 
 

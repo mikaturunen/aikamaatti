@@ -1,10 +1,12 @@
-
+"use strict";
 // we store the factory for the sockets into the gameshelf base application itself
 
 module Socket {
+  "use strict";
+  
   declare var io: any;
 
-  export var moduleName: string = "aikamaatti";
+  export var moduleName: string = "socket-service";
   export var factoryName: string = "socket";
 
   export function factory(socketFactory: any) {
