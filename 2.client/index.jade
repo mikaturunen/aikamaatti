@@ -1,0 +1,23 @@
+doctype html
+html(ng-app="aikamaatti")
+  head
+    base(href="/")
+
+    title Aikamaatti
+    
+    //- We start off with everything that we can from Bower
+    script(src="/public/js/angular/angular.min.js")
+    script(src="/public/js/angular-ui-router/release/angular-ui-router.min.js")
+    script(src="/socket.io/socket.io.js")
+    script(src="/public/js/angular-socket-io/socket.min.js")
+
+    //- Offer project js files
+    //- TODO minify files + concantenate
+    script(src="/public/js/index.js")
+    script(src="/public/js/gallery/gallery-controller.js")
+    script(src="/public/js/socket/socket-service.js")
+    script(src="/public/js/log/log-service.js")
+
+  body
+    div
+        div(ui-view)
