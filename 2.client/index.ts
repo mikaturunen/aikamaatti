@@ -11,7 +11,7 @@ module GameShelf {
   /**
    * Dependencies for the main module.
    */
-  export var depends: string[] = [ "ui.router", "btford.socket-io", "gallery" ];
+  export var depends: string[] = [ "ui.router", "ui.bootstrap", "btford.socket-io", "gallery" ];
 
   /**
    * Configuration function for main module. 

@@ -5,9 +5,13 @@ html(ng-app="aikamaatti")
 
     title Aikamaatti
     
+    // CSS files
+    link(rel="stylesheet", type="text/css", href="/public/js/bootstrap/dist/css/bootstrap.min.css")
+
     //- We start off with everything that we can from Bower
     script(src="/public/js/angular/angular.min.js")
     script(src="/public/js/angular-ui-router/release/angular-ui-router.min.js")
+    script(src="/public/js/angular-bootstrap/ui-bootstrap-tpls.min.js")
     script(src="/socket.io/socket.io.js")
     script(src="/public/js/angular-socket-io/socket.min.js")
 
