@@ -28,6 +28,11 @@ interface MetaModule {
    */
   configFunction?: (...args: any[]) => void;
 
+  /** 
+   * Completely optional list of dependencies for the module creation.
+   */ 
+  dependencies?: string[];
+
   /**
    * Optional angular.module.controller callback function.
    */
