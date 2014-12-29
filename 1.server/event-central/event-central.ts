@@ -5,7 +5,7 @@ import log = require("../log/log");
 // TODO type definitions/imports 
 var socket = require("socket.io");
 
-var emitter = new events.EventEmitter();
+var emitter: any;
 var io: any;
 
 /**
@@ -14,16 +14,27 @@ var io: any;
  */
 module EventCentral {
     "use strict";
-    // I felt like trying out something different and I created a centralized event handler 
 
-    var eventHooks: { [eventName: string]: any[]; } = { };
+    // creating the actual emitter
+    emitter = new events.EventEmitter();
 
-    var addEventInit = (eventName: string, eventHandlerFunction: any) => {
-        if (eventHooks[eventName] === undefined) {
-            eventHooks[eventName] = [ ];
+    /**
+     * Socket events reported to the event central for handling
+     */
+    var socketEvents: { [eventName: string]: any[]; } = { };
+
+    /** 
+     * List of connected socket clients
+     */
+    var sockets: any[] = [ ];
+
+    var storeSocketEvent = (eventName: string, eventHandlerFunction: any) => {
+        if (socketEvents[eventName] === undefined) {
+            socketEvents[eventName] = [ ];
         }
 
-        eventHooks[eventName].push(eventHandlerFunction);
+        log.info("Event added to centralized event handling for sockets.", { eventName: eventName });
+        socketEvents[eventName].push(eventHandlerFunction);
     };
 
     /** 
@@ -38,21 +49,27 @@ module EventCentral {
 
         // TODO socket.io type definitions
         io = socket(server);
+
         io.on("connection", (socket: any) => {
-          log.debug("Socket connected to server.");
-        });
+            log.debug("Socket connected to server.", { id: socket.id, connectedSockets: sockets.length });
+            sockets.push(socket);
 
-        // we have potentially collected socket events that need to be attached to the io object after it has been
-        // created so the other modules can start receiving messages
-        var eventNames: string[] = Object.keys(eventHooks);
-
-        if (eventNames.length > 0) {
-            log.info("Attaching buffered 'on' socket events in place... ");
-            eventNames.forEach((key: string) => { 
-                log.info("socket.on event handler attached.", { socketEventName: key });
-                eventHooks[key].forEach(onEventCallback => { io.on(key, onEventCallback) });
+            // add all specific events to this socket
+            Object.keys(socketEvents).forEach((key: string) => { 
+                log.debug("Event added to socket.", { eventName: key, id: socket.id });
+                socketEvents[key].forEach((onEventCallback: any) => { socket.on(key, onEventCallback) });
             });
-        }
+
+            socket.on("disconnect", () => {
+                log.debug("Socket disconnected from server.", { id: socket.id });
+                var index: number = sockets.indexOf(socket);
+
+                if (index !== -1) {
+                    log.debug("Removed socket from follow list.", { id: socket.id, connectedSockets: sockets.length });
+                    sockets.splice(index, 1);
+                }
+            });
+        });
     }
 
     /** 
@@ -61,15 +78,12 @@ module EventCentral {
      * @param eventHandlerFunction {any} Callback to call once the event triggers
      */
     export function addSocketEventListener(eventName: string, eventHandlerFunction: any) {
-        if (!io) {
-            console.log("JSON.stringify log " + log.debug + ", " + JSON.stringify(log.debug));
-            log.debug("Socket.io not initiazed. Buffering event add.", { eventName: eventName });
-            addEventInit(eventName, eventHandlerFunction);
-            return;
-        }
+        storeSocketEvent(eventName, eventHandlerFunction);
 
-        io.on(eventName, eventHandlerFunction);
-        log.info("Registered handler for socket.event", { eventName: eventName });
+        if (io) {
+            sockets.forEach((socket: any) => { socket.on(eventName, eventHandlerFunction); });
+            log.info("Registered handler for socket.event", { eventName: eventName });
+        }
     }
 
     /** 

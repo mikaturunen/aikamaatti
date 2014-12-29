@@ -31,7 +31,6 @@ var server = app.listen(3000, "127.0.0.1", () => {
 });
 
 eventCentral.init(server);
-
 eventCentral.addSocketEventListener("log.debug", (o: any, o1: any, o2: any) => { console.log("DEBUG: ", o, o1, o2); });
 eventCentral.addSocketEventListener("log.info", (o: any, o1: any, o2: any) => { console.log("INFO: ", o, o1, o2); });
 eventCentral.addSocketEventListener("log.warn", (o: any, o1: any, o2: any) => { console.log("WARN: ", o, o1, o2); });
