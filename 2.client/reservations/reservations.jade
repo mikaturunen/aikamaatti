@@ -5,12 +5,12 @@ div(ui-view)
 
     div
       //- Used to manipulate the view
-      div(class="btn-group")
-        label(class="btn btn-success", ng-model="radioModel", btn-radio="'Week'", uncheckable) Week
-        label(class="btn btn-success", ng-model="radioModel", btn-radio="'WorkWeek'", uncheckable) Work week
-        label(class="btn btn-success", ng-model="radioModel", btn-radio="'Weekend'", uncheckable) Weekend
-        label(class="btn btn-success", ng-model="radioModel", btn-radio="'Today'", uncheckable) Today
-        label(class="btn btn-success", ng-model="radioModel", btn-radio="'Tomorrow'", uncheckable) Tomorrow
+      div(class="btn-group", ng-init="radioModel=\"WorkWeek\"")
+        label(class="btn btn-primary", ng-model="radioModel", btn-radio="\"WorkWeek\"") Work week
+        label(class="btn btn-primary", ng-model="radioModel", btn-radio="\"Week\"") Week
+        label(class="btn btn-primary", ng-model="radioModel", btn-radio="\"Weekend\"") Weekend
+        label(class="btn btn-primary", ng-model="radioModel", btn-radio="\"Today\"") Today
+        label(class="btn btn-primary", ng-model="radioModel", btn-radio="\"Tomorrow\"") Tomorrow
 
       div
         //- TODO timetable / reservation system
