@@ -2,21 +2,11 @@
 /**
  * Main angular module that initially configures routes in place and maintains order.
  */
-module GameShelf {
-  /**
-   * Name of the main module.
-   */
-  export var name: string = "aikamaatti";
-
-  /**
-   * Dependencies for the main module.
-   */
-  export var depends: string[] = [ "ui.router", "ui.bootstrap", "btford.socket-io", "gallery" ];
-
+module Aikamaatti {
   /**
    * Configuration function for main module. 
    */ 
-  export function config($stateProvider: any, $urlRouterProvider: any, $locationProvider: any) {
+  var config = ($stateProvider: any, $urlRouterProvider: any, $locationProvider: any) => {
     // TODO: write types for the parameters to config
 
     $urlRouterProvider.otherwise("/")
@@ -25,20 +15,35 @@ module GameShelf {
 
     // Now set up the states
     $stateProvider
-      .state("gallery", {
+      .state("reservations", {
         url: "/",
-        templateUrl: "public/html/gallery/gallery.html",
-        controller: "GalleryController"
+        templateUrl: "public/html/reservations/reservations.html",
+        controller: "ReservationsController"
       });
-  }
+  };
+
+  /**
+   * Module details for Angular to consume.
+   */ 
+  export var meta: MetaModule = {
+    moduleName: "aikamaatti",
+    configFunction: config,
+    // list of dependencies Aikamaatti application depends on.
+    dependencies: [ 
+      // outside dependencies (through bower)
+      "ui.router", "ui.bootstrap", "btford.socket-io", 
+      // application specific dependencies
+      "reservations" 
+    ]
+  };
 };
 
 // Initialize the main module of our application
 angular
-  .module(GameShelf.name, GameShelf.depends)
+  .module(Aikamaatti.meta.moduleName, Aikamaatti.meta.dependencies)
   .config([
       "$stateProvider", "$urlRouterProvider", "$locationProvider", 
-      GameShelf.config
+      Aikamaatti.meta.configFunction
     ]);
 
 // centralized initiation of the modules we are going to declare in other files.
@@ -46,4 +51,4 @@ angular
 //            then in other js files we just call the modules and declare controllers, services and such for the
 //            modules.
 angular
-  .module("gallery", [ ]);
+  .module("reservations", [ ]);
