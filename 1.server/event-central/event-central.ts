@@ -2,11 +2,10 @@
 
 import events = require("events");
 import log = require("../log/log");
-// TODO type definitions/imports 
-var socket = require("socket.io");
+import socket = require("socket.io");
 
-var emitter: any;
-var io: any;
+var emitter: NodeJS.EventEmitter;
+var io: SocketIO.Server;
 
 /**
  * @class EventCentral.
@@ -26,28 +25,28 @@ module EventCentral {
     /** 
      * List of connected socket clients
      */
-    var sockets: any[] = [ ];
+    var sockets: SocketIO.Socket[] = [ ];
 
+    /** 
+     * Stores the socket events.
+     * @param eventName {string} Name of the event to listen for
+     * @param eventHandlerFunction {any} Callback for handling the event.
+     */ 
     var storeSocketEvent = (eventName: string, eventHandlerFunction: any) => {
         if (socketEvents[eventName] === undefined) {
             socketEvents[eventName] = [ ];
         }
 
-        log.info("Event added to centralized event handling for sockets.", { eventName: eventName });
+        log.debug("Event added to centralized event handling for sockets.", { eventName: eventName });
         socketEvents[eventName].push(eventHandlerFunction);
     };
-
+    
+    // TODO type server object from Express
     /** 
-     * Initializes the event handling central and starts listening for socket messages.
-     */    
-    export function init(server: any) {
-        if (io !== undefined) {
-            return;
-        }
-
-        log.debug("Initializing socket.io for use.");
-
-        // TODO socket.io type definitions
+     * Initializes the socket comunication.
+     * @param server {any} Server object from Express
+     */
+    var initSocket = (server: any) => {
         io = socket(server);
 
         io.on("connection", (socket: any) => {
@@ -70,6 +69,41 @@ module EventCentral {
                 }
             });
         });
+    };
+
+    /** 
+     * Connects client log-service to the Bunyan logging system on the backend so we can have shared logs.
+     */ 
+    var connectClientLogging = () => {
+        // connect client side logging into the log system
+        addSocketEventListener("log.debug", (parameters: any) => { 
+            log.client("debug", parameters.message, parameters.meta); 
+        });
+
+        addSocketEventListener("log.info", (parameters: any) => { 
+            log.client("info", parameters.message, parameters.meta); 
+        });
+
+        addSocketEventListener("log.warn", (parameters: any) => { 
+            log.client("warn", parameters.message, parameters.meta); 
+        });
+
+        addSocketEventListener("log.error", (parameters: any) => { 
+            log.client("error", parameters.message, parameters.meta); 
+        });
+    };
+
+    /** 
+     * Initializes the event handling central and starts listening for socket messages.
+     */    
+    export function init(server: any) {
+        if (io !== undefined) {
+            return;
+        }
+
+        log.debug("Initializing socket.io for use.");
+        initSocket(server);
+        connectClientLogging();
     }
 
     /** 
@@ -80,9 +114,8 @@ module EventCentral {
     export function addSocketEventListener(eventName: string, eventHandlerFunction: any) {
         storeSocketEvent(eventName, eventHandlerFunction);
 
-        if (io) {
+        if (sockets.length > 0) {
             sockets.forEach((socket: any) => { socket.on(eventName, eventHandlerFunction); });
-            log.info("Registered handler for socket.event", { eventName: eventName });
         }
     }
 

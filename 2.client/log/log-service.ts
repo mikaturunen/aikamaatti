@@ -5,13 +5,22 @@
 module Log {
   // TODO create type definition for socketFactory (angular-socket-io) and PR into DefinitelyTyped
   var factory = (socket: any) => {
+    /** 
+     * Prints the given log message to browser console.
+     * @param message {string} Log message.
+     * @param meta {any} Optional meta object for additional debugs.
+     */
+    var printToConsole = (message: string, meta?: { [fieldName: string]: any; }) => {
+      console.log(message, meta ? " | " + JSON.stringify(meta) : "");
+    };
+
     /**
      * Info log. Sends the logged information to the server too.
      * @param message {string} Log message.
      * @param meta {any} Optional meta object for additional debugs.
      */
     var logInfo = (message: string, meta?: { [fieldName: string]: any; }) => {
-      console.log("INFO | " + new Date() + " | " + message);
+      printToConsole("INFO | " + new Date() + " | " + message, meta);
       socket.emit("log.info", { message: message, meta: meta });
     };
 
@@ -21,7 +30,7 @@ module Log {
      * @param meta {any} Optional meta object for additional debugs.
      */
     var logDebug = (message: string, meta?: { [fieldName: string]: any; }) => {
-      console.log("DBG  | " + new Date() + " | " + message);
+      printToConsole("DBG  | " + new Date() + " | " + message, meta);
       socket.emit("log.debug", { message: message, meta: meta });
     };
 
@@ -31,7 +40,7 @@ module Log {
      * @param meta {any} Optional meta object for additional debugs.
      */
     var logError = (message: string, meta?: { [fieldName: string]: any; }) => {
-      console.log("ERR  | " + new Date() + " | " + message);
+      printToConsole("ERR  | " + new Date() + " | " + message, meta);
       socket.emit("log.error", { message: message, meta: meta });
     };
 
@@ -41,7 +50,7 @@ module Log {
      * @param meta {any} Optional meta object for additional debugs.
      */
     var logWarning = (message: string, meta?: { [fieldName: string]: any; }) => {
-      console.log("WARN | " + new Date() + " | " + message);
+      printToConsole("WARN | " + new Date() + " | " + message, meta);
       socket.emit("log.warn", { message: message, meta: meta });
     };
 

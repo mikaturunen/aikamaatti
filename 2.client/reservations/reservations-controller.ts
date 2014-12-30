@@ -4,7 +4,7 @@ module ReservationsController {
   // parameter list for the function always needs to match the injected object list in the below angular module setup
   // phase
   var controller = ($scope: ReservationsScope, socket: any, log: any) => {
-    log.debug("Started: " + JSON.stringify(ReservationsController.meta));
+    log.debug("Started Controller. ", ReservationsController.meta);
     defineScopeFunctions($scope);
   };
 

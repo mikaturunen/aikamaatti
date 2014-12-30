@@ -37,7 +37,7 @@ module UtilityEvents {
    * Initialises the UtilityEvents module and hooks it into the correct processes
    */
   export function hook() {
-    log.debug("Production mode status", { NODE_ENV: process.env.NODE_ENV === undefined ? "development" : "production" });
+    log.info("Production mode status", { NODE_ENV: process.env.NODE_ENV === undefined ? "development" : "production" });
     // setting up the hooks for process events when there are events that the application let slip through
     process.on(events.uncaughtException.message, events.uncaughtException.fn);
   }
