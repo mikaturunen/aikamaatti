@@ -1,8 +1,11 @@
+"use strict";
 
 /** 
  * @module Log
  */
 module Log {
+  "use strict";
+
   // TODO create type definition for socketFactory (angular-socket-io) and PR into DefinitelyTyped
   var factory = (socket: any) => {
     /** 
@@ -67,7 +70,7 @@ module Log {
    * Module details for Angular to consume.
    */ 
   export var meta: MetaModule = {
-    moduleName: "aikamaatti",
+    moduleName: "log-service",
     serviceName: "log",
     serviceFunction: factory
   }
@@ -75,8 +78,10 @@ module Log {
 
 // initiating the socket factory 
 angular
-  .module(Log.meta.moduleName)
+  .module(Log.meta.moduleName, [ ])
   .factory(Log.meta.serviceName, [
       "socket",
       Log.meta.serviceFunction
     ]);
+
+export = Log;

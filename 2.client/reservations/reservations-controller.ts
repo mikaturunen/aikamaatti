@@ -1,3 +1,4 @@
+"use strict";
 
 module ReservationsController {
   // The actual controller function that takes in what dependencies were injected.
@@ -32,9 +33,11 @@ module ReservationsController {
 
 // Setup angular module, dependencies and behavior
 angular
-  .module(ReservationsController.meta.moduleName)
+  .module(ReservationsController.meta.moduleName, [ ])
   .controller(ReservationsController.meta.controllerName, 
     [
       "$scope", "socket", "log",
       ReservationsController.meta.controllerFunction 
     ]);
+
+export = ReservationsController;

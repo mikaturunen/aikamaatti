@@ -2,6 +2,7 @@
 
 import bunyan = require("bunyan");
 import eventCentral = require("../event-central/event-central");
+import constants = require("../browserify/constants/constants");
 
 // creating logger for the normal aikamaatti issues
 var log = bunyan.createLogger({
@@ -23,7 +24,7 @@ var clientLogger = bunyan.createLogger({
  * @params logger {bunyan.Logger} The actual Logger to use from bunyan
  * @params level {string} Log level. "debug", "error", "warn", "trace", "info"
  * @params message {string} Message to log.
- * @params meta {any} Optional. Meta information for Bunyan to use.
+ * @params meta {any} Optional. Meta information for Bunyan to use. 
  */
 var writeLog = (logger: bunyan.Logger, level: string, message: string, meta?: { [fieldName: string]: any; }) => {
   if (meta) {
@@ -32,12 +33,6 @@ var writeLog = (logger: bunyan.Logger, level: string, message: string, meta?: { 
     (<any>logger)[level](message);
   }
 };
-
-// I like my constants in big bulky and bold letters...
-var DEBUG: string   = "debug";
-var ERROR: string   = "error";
-var WARNING: string = "warn";
-var INFO: string    = "info";
 
 /** 
  * @module Log
@@ -62,7 +57,7 @@ module Log {
    * @params meta {any} Optional. 
    */
   export function debug(message: string, meta?: { [fieldName: string]: any; }) {
-     writeLog(log, DEBUG, message, meta);
+     writeLog(log, constants.logLevels.debug, message, meta);
   }
 
   /** 
@@ -71,7 +66,7 @@ module Log {
    * @params meta {any} Optional. 
    */
   export function info(message: string, meta?: { [fieldName: string]: any; }) {
-    writeLog(log, INFO, message, meta);
+    writeLog(log, constants.logLevels.info, message, meta);
   }
 
   /** 
@@ -80,7 +75,7 @@ module Log {
    * @params meta {any} Optional. 
    */
   export function warn(message: string, meta?: { [fieldName: string]: any; }) {  
-    writeLog(log, WARNING, message, meta);
+    writeLog(log, constants.logLevels.warning, message, meta);
   }
 
   /** 
@@ -89,7 +84,7 @@ module Log {
    * @params meta {any} Optional. 
    */
   export function error(message: string, meta?: { [fieldName: string]: any; }) {
-    writeLog(log, ERROR, message, meta);
+    writeLog(log, constants.logLevels.error, message, meta);
   }
 };
 

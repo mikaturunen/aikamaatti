@@ -25,39 +25,30 @@ module Aikamaatti {
       });
   };
 
-  /** 
-   * List of modules that are also dependencies and need to be created through angular.module
-   */ 
-  export var modules = [
-    "socket-service",
-    "reservations"
-  ]; 
-
   /**
    * Module details for Angular to consume.
    */ 
   export var meta: MetaModule = {
     moduleName: "aikamaatti",
-    configFunction: config,
-    // list of dependencies Aikamaatti application depends on.
-    dependencies: [ 
-        // outside dependencies (through bower)
-        "ui.router", "ui.bootstrap", "btford.socket-io", 
-      ]
-      .concat(modules)
+    configFunction: config
   };
 };
 
-// Initialize the main module of our application
+// setup the angular application itself with the help of the browserify modules
 angular
-  .module(Aikamaatti.meta.moduleName, Aikamaatti.meta.dependencies)
+  .module(
+    Aikamaatti.meta.moduleName, [
+      // outside (bower) dependencies
+      "ui.router", 
+      "ui.bootstrap", 
+      "btford.socket-io",
+      // internal application browserify dependencies
+      require("./socket/socket-service").meta.moduleName,
+      require("./log/log-service").meta.moduleName,
+      require("./reservations/reservations-controller").meta.moduleName
+    ]
+  )
   .config([
       "$stateProvider", "$urlRouterProvider", "$locationProvider", 
       Aikamaatti.meta.configFunction
     ]);
-
-// centralized initiation of the modules we are going to declare in other files.
-// rationale: this js files gets included first -> declare all modules and initiate them
-//            then in other js files we just call the modules and declare controllers, services and such for the
-//            modules.
-Aikamaatti.modules.forEach(angularModule => angular.module(angularModule, []));
