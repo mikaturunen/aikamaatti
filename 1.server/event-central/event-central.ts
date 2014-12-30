@@ -3,6 +3,7 @@
 import events = require("events");
 import log = require("../log/log");
 import socket = require("socket.io");
+import constants = require("../browserify/constants/constants");
 
 var emitter: NodeJS.EventEmitter;
 var io: SocketIO.Server;
@@ -49,7 +50,7 @@ module EventCentral {
     var initSocket = (server: any) => {
         io = socket(server);
 
-        io.on("connection", (socket: any) => {
+        io.on(constants.socketEvents.connected, (socket: any) => {
             log.debug("Socket connected to server.", { id: socket.id, connectedSockets: sockets.length });
             sockets.push(socket);
 
@@ -59,7 +60,7 @@ module EventCentral {
                 socketEvents[key].forEach((onEventCallback: any) => { socket.on(key, onEventCallback) });
             });
 
-            socket.on("disconnect", () => {
+            socket.on(constants.socketEvents.disconnected, () => {
                 log.debug("Socket disconnected from server.", { id: socket.id });
                 var index: number = sockets.indexOf(socket);
 
@@ -76,20 +77,20 @@ module EventCentral {
      */ 
     var connectClientLogging = () => {
         // connect client side logging into the log system
-        addSocketEventListener("log.debug", (parameters: any) => { 
-            log.client("debug", parameters.message, parameters.meta); 
+        addSocketEventListener(constants.socketEvents.log.debug, (parameters: any) => { 
+            log.client(constants.logLevels.debug, parameters.message, parameters.meta); 
         });
 
-        addSocketEventListener("log.info", (parameters: any) => { 
-            log.client("info", parameters.message, parameters.meta); 
+        addSocketEventListener(constants.socketEvents.log.info, (parameters: any) => { 
+            log.client(constants.logLevels.info, parameters.message, parameters.meta); 
         });
 
-        addSocketEventListener("log.warn", (parameters: any) => { 
-            log.client("warn", parameters.message, parameters.meta); 
+        addSocketEventListener(constants.socketEvents.log.warning, (parameters: any) => { 
+            log.client(constants.logLevels.warning, parameters.message, parameters.meta); 
         });
 
-        addSocketEventListener("log.error", (parameters: any) => { 
-            log.client("error", parameters.message, parameters.meta); 
+        addSocketEventListener(constants.socketEvents.log.error, (parameters: any) => { 
+            log.client(constants.logLevels.error, parameters.message, parameters.meta); 
         });
     };
 
