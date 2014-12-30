@@ -4,6 +4,9 @@
  */
 
 // From DefinitelyTyped
+// Allowing the node.d.ts to go in as we are using browserify on the client side so node.d.ts is useful there too 
+///<reference path="DefinitelyTyped/node/node.d.ts" />
+
 ///<reference path="DefinitelyTyped/angularjs/angular.d.ts" />
 
 // Written specifically for GameShelf app

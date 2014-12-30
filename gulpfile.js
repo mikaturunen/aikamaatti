@@ -14,7 +14,11 @@ var tslint = require("gulp-tslint");
 var install = require("gulp-install");
 var uglify = require("gulp-uglify");
 var sourcemaps = require("gulp-sourcemaps");
-var sequence = require('run-sequence');
+var sequence = require("run-sequence");
+var browserify = require("browserify");
+var tsify = require("tsify");
+var source = require("vinyl-source-stream");
+var buffer = require("vinyl-buffer");
 
 // common target locations
 var serverReleaseLocation = "./release/server";
@@ -42,6 +46,8 @@ var typeDefinitionsClient = fromDefinitelyTypedClient
     .concat(projectDefinitions)
     .concat([ "2.client/**/*.ts" ]);
 
+var typeDefinitionsBrowserify = [ "1.server/browserify/**/*.ts" ];
+
 // JADE RELATED
 var jadeLocation = [
     "2.client/**/*.jade"
@@ -58,6 +64,17 @@ var taskBower = "bower";
 var taskNpm = "npm";
 var taskBuild = "build";
 var taskUglifyJs = "uglify-js";
+var taskBrowserifyClient = "browserify";
+
+var tscClientOptions = {
+    declarationFiles: true,
+    noExternalResolve: false,
+    noImplicitAny: true,
+    removeComments: true,
+    target: "ES5",
+    module: "amd",
+    showErrors: true
+};
 
 // List of gulp tasks. Aim is to chop the individual tasks into as small chunks as possible and allow 
 // gulp and associated set of tools take care of speed.
@@ -72,6 +89,31 @@ gulp.task(taskTslintClient, function() {
     console.log("Linting Client side TS: " + JSON.stringify(typeDefinitionsClient, null, 2));
     return gulp.src(typeDefinitionsClient).pipe(tslint()).pipe(tslint.report("verbose"));
 })
+
+gulp.task(taskBrowserifyClient, function() {
+    console.log("Browesrify TS from: " + JSON.stringify(typeDefinitionsBrowserify, null, 2));
+
+    // TODO iterate target 'typeDefinitionsBrowserify', find all files matching glob and browersify them
+    var bundler = browserify({
+        entries: [ 
+            path.join(__dirname, "definitions/client.d.ts"), 
+            path.join(__dirname, "2.client/index.ts") 
+        ],
+        debug: false
+    });
+
+    var bundle = function() {
+        return bundler
+            .plugin("tsify", { noImplicitAny: true, removeComments: true, declarationFiles: true })
+            .bundle()
+            .pipe(source( path.normalize("js/index.min.js") ))
+            .pipe(buffer())
+            //.pipe(uglify())
+            .pipe(gulp.dest(clientReleaseLocation));
+    };
+
+    return bundle();
+});
 
 gulp.task(taskJade, function() {
     console.log("Compiling jade files from locations: " + JSON.stringify(jadeLocation, null, 2));
@@ -106,15 +148,7 @@ gulp.task(taskTscServer, function() {
 gulp.task(taskTscClient, function() {
     console.log("Listed definitions to add for client compilation: " + JSON.stringify(typeDefinitionsClient, null, 2));                        
     var tsClientResult = gulp.src(typeDefinitionsClient)
-                            .pipe(ts({
-                                declarationFiles: true,
-                                noExternalResolve: false,
-                                noImplicitAny: true,
-                                removeComments: true,
-                                target: "ES5",
-                                module: "amd",
-                                showErrors: true
-                            }));
+                            .pipe(ts(tscClientOptions));
 
     return eventStream.merge(
         tsClientResult.dts.pipe(gulp.dest('definitions/client')),
@@ -134,6 +168,7 @@ gulp.task(taskBuild, function() {
     sequence(
             [ taskJade, taskTslintServer, taskTslintClient ],
             [ taskTscServer, taskTscClient ],
+            taskBrowserifyClient,
             taskUglifyJs
         );
 });
@@ -145,6 +180,7 @@ gulp.task("default", function() {
             taskBower, 
             [ taskJade, taskTslintServer, taskTslintClient ],
             [ taskTscServer, taskTscClient ],
+            taskBrowserifyClient,
             taskUglifyJs
         );
 });
