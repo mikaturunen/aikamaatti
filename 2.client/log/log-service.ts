@@ -1,5 +1,7 @@
 "use strict";
 
+import constants = require("../../1.server/browserify/constants/constants");
+
 /** 
  * @module Log
  */
@@ -24,7 +26,7 @@ module Log {
      */
     var logInfo = (message: string, meta?: { [fieldName: string]: any; }) => {
       printToConsole("INFO | " + new Date() + " | " + message, meta);
-      socket.emit("log.info", { message: message, meta: meta });
+      socket.emit(constants.socketEvents.log.info, { message: message, meta: meta });
     };
 
     /**
@@ -34,7 +36,7 @@ module Log {
      */
     var logDebug = (message: string, meta?: { [fieldName: string]: any; }) => {
       printToConsole("DBG  | " + new Date() + " | " + message, meta);
-      socket.emit("log.debug", { message: message, meta: meta });
+      socket.emit(constants.socketEvents.log.debug, { message: message, meta: meta });
     };
 
     /**
@@ -44,7 +46,7 @@ module Log {
      */
     var logError = (message: string, meta?: { [fieldName: string]: any; }) => {
       printToConsole("ERR  | " + new Date() + " | " + message, meta);
-      socket.emit("log.error", { message: message, meta: meta });
+      socket.emit(constants.socketEvents.log.error, { message: message, meta: meta });
     };
 
     /**
@@ -54,7 +56,7 @@ module Log {
      */
     var logWarning = (message: string, meta?: { [fieldName: string]: any; }) => {
       printToConsole("WARN | " + new Date() + " | " + message, meta);
-      socket.emit("log.warn", { message: message, meta: meta });
+      socket.emit(constants.socketEvents.log.warning, { message: message, meta: meta });
     };
 
     // returning the object to the client

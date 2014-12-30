@@ -39,7 +39,7 @@ module Constants {
         defaults: {
             NODE_ENV: "development"
         }
-    }
+    };
 };
 
 export = Constants;
