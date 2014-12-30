@@ -93,7 +93,6 @@ gulp.task(taskTslintClient, function() {
 gulp.task(taskBrowserifyClient, function() {
     console.log("Browesrify TS from: " + JSON.stringify(typeDefinitionsBrowserify, null, 2));
 
-    // TODO iterate target 'typeDefinitionsBrowserify', find all files matching glob and browersify them
     var bundler = browserify({
         entries: [ 
             path.join(__dirname, "definitions/client.d.ts"), 
@@ -108,7 +107,7 @@ gulp.task(taskBrowserifyClient, function() {
             .bundle()
             .pipe(source( path.normalize("js/index.min.js") ))
             .pipe(buffer())
-            //.pipe(uglify())
+            .pipe(uglify())
             .pipe(gulp.dest(clientReleaseLocation));
     };
 
