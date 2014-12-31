@@ -11,7 +11,7 @@ module EmployeesController {
 
   // One place to define the functionality of the objects in the scope
   var defineScopeFunctions = ($scope: EmployeesScope) => {  
-    
+    $scope.isEmployeeCreationHidden = true;
   };
 
   var name: string = "employees";
@@ -21,7 +21,7 @@ module EmployeesController {
    * EmployeesScope object for $scope usage.
    */
   export interface EmployeesScope extends ng.IScope {
-    
+    isEmployeeCreationHidden: boolean;
   };
 
   /**
