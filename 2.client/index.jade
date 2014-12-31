@@ -19,5 +19,9 @@ html(ng-app="aikamaatti")
     script(src="/public/js/index.min.js")
 
   body
+    tabset
+        tab(heading="Reservations", ui-sref="reservations")
+        tab(heading="Employees", ui-sref="employees")
+
     div
         div(ui-view)
