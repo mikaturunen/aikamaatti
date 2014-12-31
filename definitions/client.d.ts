@@ -3,11 +3,8 @@
  * Collecting all of them into a single file as I'm lazy like that...
  */
 
-// From DefinitelyTyped
-// Allowing the node.d.ts to go in as we are using browserify on the client side so node.d.ts is useful there too 
-///<reference path="DefinitelyTyped/node/node.d.ts" />
+///<reference path="common.d.ts" />
 
 ///<reference path="DefinitelyTyped/angularjs/angular.d.ts" />
-
-// Written specifically for GameShelf app
 ///<reference path="Client/meta-module.d.ts" />
+///<reference path="Client/controller-state.d.ts" />
