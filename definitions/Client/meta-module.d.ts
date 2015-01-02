@@ -18,6 +18,11 @@ interface MetaModule {
    */
   serviceName?: string;
 
+  /** 
+   * Optional directive name. When part of directive, this should be used.
+   */ 
+  directiveName?: string;
+
   /**
    * Dependencies for the module. Used when creating the module.
    */
@@ -42,4 +47,9 @@ interface MetaModule {
    * Optional angular.module.service/factory callback function.
    */
   serviceFunction?: (...args: any[]) => void;
+
+  /** 
+   *  Optional angular.module.directive callback function.
+   */ 
+  directiveFunction?: (...args: any[]) => void;
 }

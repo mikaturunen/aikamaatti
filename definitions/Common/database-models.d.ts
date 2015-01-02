@@ -29,19 +29,19 @@ interface IdentifierModel {
 }
 
 
-interface SkillModel extends IdentifierModel {
+interface TreatmentModel extends IdentifierModel {
     /** 
-     * Name of the specific skill, talent or treatment the Employee can perform.
+     * Name of the specific treatment or talent.
      */ 
     name: string;
 }
 
 interface EmployeeModel extends IdentifierModel {
     /** 
-     * List of SkillModel._id's. 
-     * What skills the Employee has, as in, what work the Employee can do. Change tires, fill tax forms, cut hair etc.
+     * List of TreatmentModel._id's. 
+     * What treatments the employee can perform: cut hair, style eyebrows etc.
      */ 
-    skill_ids: string[];
+    Treatment_ids: string[];
 
     /** 
      * First name of the Employee

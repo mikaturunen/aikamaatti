@@ -45,10 +45,20 @@ angular
       "ui.router", 
       "ui.bootstrap", 
       "btford.socket-io",
+      "angularFileUpload"
+    ]
+    // declaring our services
+    .concat(
       require("./socket/socket-service").meta.moduleName,
       require("./log/log-service").meta.moduleName
-    ]
-    .concat( controllers.map(controller => controller.meta.moduleName) )
+    )
+    // declaring our controllers
+    .concat( 
+      controllers.map(controller => controller.meta.moduleName) 
+    )
+    // declaring our directives
+    .concat(
+    )
   )
   .config([
       "$stateProvider", "$urlRouterProvider", "$locationProvider", 

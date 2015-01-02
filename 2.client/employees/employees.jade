@@ -12,6 +12,9 @@ div(ui-view)
             button(ng-model="isEmployeeCreationHidden", ng-click="isEmployeeCreationHidden = !isEmployeeCreationHidden")
                 label Create employee(s)
 
+            button(ng-model="files", ng-file-select="exportEmployeesCsv($files)") Export Employees from CSV 1
+            button(ng-model="files", ng-file-select="exportTreatmentsCsv($files)") Export Treatments from CSV 1
+
             div(collapse="isEmployeeCreationHidden")
                 //- TODO export employees from CSV
                 label(for="employee-firstname") First name
