@@ -50,7 +50,9 @@ angular
     // declaring our services
     .concat(
       require("./socket/socket-service").meta.moduleName,
-      require("./log/log-service").meta.moduleName
+      require("./log/log-service").meta.moduleName,
+      require("./employees/employees-service").meta.moduleName,
+      require("./CSV/csv-service").meta.moduleName
     )
     // declaring our controllers
     .concat( 
