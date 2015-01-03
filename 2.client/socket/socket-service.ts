@@ -13,7 +13,7 @@ module Socket {
    * Module details for Angular to consume.
    */ 
   export var meta: MetaModule = {
-    moduleName: "socket-service",
+    moduleName: "aikamaatti.socket-service",
     serviceName: "socket",
     serviceFunction: factory
   }

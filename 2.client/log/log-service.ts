@@ -83,7 +83,7 @@ module Log {
    * Module details for Angular to consume.
    */ 
   export var meta: MetaModule = {
-    moduleName: "log-service",
+    moduleName: "aikamaatti.log-service",
     serviceName: "log",
     serviceFunction: factory
   }
