@@ -9,22 +9,9 @@ div(ui-view)
 
         //- Used to create new employees quickly
         div
-            button(ng-model="isEmployeeCreationHidden", ng-click="isEmployeeCreationHidden = !isEmployeeCreationHidden")
-                label Create employee(s)
-
-            button(ng-model="files", ng-file-select="exportEmployeesCsv($files)") Export Employees from CSV 1
-            button(ng-model="files", ng-file-select="exportTreatmentsCsv($files)") Export Treatments from CSV 1
-
-            div(collapse="isEmployeeCreationHidden")
-                //- TODO export employees from CSV
-                label(for="employee-firstname") First name
-                input(type="text", id="employee-firstname").form-control
-
-                label(for="employee-surname") First name
-                input(type="text", id="employee-surname").form-control
-
-                button(type="button").btn.btn-default Save
-                button(type="button").btn.btn-default Clear
+            // - TODO design the actual employee + treatments views for adding and managing them
+            button(ng-model="files", ng-file-select="importEmployeesCsv($files)") Import Employees from CSV
+            button(ng-model="files", ng-file-select="importTreatmentsCsv($files)") Import Treatments from CSV 1
 
         //- Used to manipulate specific traits/skills the employee has and what they are allowed to do
         //- Example: Person 'A' can change tires but they cannot work Excel. When doing reservations for Customer ABC 
