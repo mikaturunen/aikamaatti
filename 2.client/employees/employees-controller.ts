@@ -1,63 +1,39 @@
 "use strict";
 
 import Log = require("../log/log-service");
+import Csv = require("../CSV/csv-service");
 
 module EmployeesController {
-  // ambient declaration for PapaParse 
-  declare var Papa: any;
-
   /**
    * EmployeesScope object for $scope usage.
    */
   export interface EmployeesScope extends ng.IScope {
     isEmployeeCreationHidden: boolean;  
-    exportEmployeesCsv: ($files: any[]) => void;    // exports a list of employees (including groups) from a csv 
-                                                           // file
-    exportTreatmentsCsv: ($files: any[]) => void;   // exports a list of treatments from CSV file
+    importEmployeesCsv: ($files: any[]) => void;    // exports a list of employees (including groups) from a csv 
+                                                    // file
+    importTreatmentsCsv: ($files: any[]) => void;   // exports a list of treatments from CSV file
   };
 
   // The actual controller function that takes in what dependencies were injected.
   // parameter list for the function always needs to match the injected object list in the below angular module setup
   // phase
-  var controller = ($scope: EmployeesScope, socket: any, log: Log.Service) => {
+  var controller = ($scope: EmployeesScope, socket: any, log: Log.Service, csv: Csv.Service) => {
     log.debug("Started Controller. ", EmployeesController.meta);
-    defineScopeFunctions($scope, log);
+    defineScopeFunctions($scope, log, csv);
   };
 
   // One place to define the functionality of the objects in the scope
-  var defineScopeFunctions = ($scope: EmployeesScope, log: Log.Service) => {  
+  var defineScopeFunctions = ($scope: EmployeesScope, log: Log.Service, csv: Csv.Service) => {  
     $scope.isEmployeeCreationHidden = true;
 
-    $scope.exportEmployeesCsv = ($files: any) => {
+    $scope.importEmployeesCsv = ($files: any) => {
       log.debug("Exporting employees from CSV file.", { filesCount: $files.length });
-      
-      Papa.parse($files[0], { 
-        // TODO read header info? -> preview?
-        worker: true,
-        skipEmptyLines: true,
-        complete: (results: any[], file: string) => {
-          log.info("Parsed file: " + file + " for Employees", { results: results });
-        },
-        error: (error: any) => {
-          log.error("Somethign went wrong parsing the given file for Employees", { error: error });
-        },
-      });
+      csv.importEmployees($files);
     };
 
-    $scope.exportTreatmentsCsv = ($files: any) => {
+    $scope.importTreatmentsCsv = ($files: any) => {
       log.debug("Exporting treatments from CSV file.", { filesCount: $files.length });
-
-      Papa.parse($files[0], { 
-        // TODO read header info? -> preview?
-        worker: true,
-        skipEmptyLines: true,
-        complete: (results: any[], file: string) => {
-          log.info("Parsed file: " + file + " for Employees", { results: results });
-        },
-        error: (error: any) => {
-          log.error("Somethign went wrong parsing the given file for Employees", { error: error });
-        },
-      });
+      csv.importTreatments($files);
     };
   };
 
@@ -91,7 +67,7 @@ angular
   .module(EmployeesController.meta.moduleName, [ ])
   .controller(EmployeesController.meta.controllerName, 
     [
-      "$scope", "socket", "log",
+      "$scope", "socket", "log", "csv",
       EmployeesController.meta.controllerFunction 
     ]);
 
