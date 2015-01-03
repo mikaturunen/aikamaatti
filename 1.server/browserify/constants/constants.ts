@@ -18,7 +18,12 @@ module Constants {
             debug: "log.debug",
         },
         connected: "connection",
-        disconnected: "disconnect"
+        disconnected: "disconnect",
+        employees: {
+            add: "aikamaatti.employee.save",        // Adds a new one (save)
+            update: "aikamaatti.employees.update",  // Update/upsert existing ones. 
+            remove: "aikamaatti.employees.remove"   // Remove an existing one
+        }
     };
 
     /** 
