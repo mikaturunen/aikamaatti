@@ -3,6 +3,11 @@
  * interfacing between the backend and the client.
  */
 
+// NOTE I've made a silent rule of all the database models using the character _ notation for property naming instead
+//      of normal camel casing. This way it should be obvious that we are working with database related objects. 
+//      otherwise everything is named to follow camelcase convention where the first letter is lower case. 
+//      The idea started from current databases style of naming the unique id's for documents (_id).
+
 /** 
  * Base Model all the other database models extend from as they all share the common functionality.
  */
@@ -41,7 +46,7 @@ interface EmployeeModel extends IdentifierModel {
      * List of TreatmentModel._id's. 
      * What treatments the employee can perform: cut hair, style eyebrows etc.
      */ 
-    Treatment_ids: string[];
+    treatment_ids: string[];
 
     /** 
      * First name of the Employee
