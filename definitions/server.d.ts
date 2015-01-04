@@ -5,7 +5,7 @@
 
 ///<reference path="common.d.ts" />
 
-///<reference path="DefinitelyTyped/mongoose/mongoose.d.ts" />
+///<reference path="DefinitelyTyped/mongodb/mongodb.d.ts" />
 ///<reference path="DefinitelyTyped/express/express.d.ts" />
 ///<reference path="DefinitelyTyped/socket.io/socket.io.d.ts" />
 ///<reference path="DefinitelyTyped/bunyan/bunyan.d.ts" />
