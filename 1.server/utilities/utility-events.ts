@@ -41,6 +41,13 @@ module UtilityEvents {
     // setting up the hooks for process events when there are events that the application let slip through
     process.on(events.uncaughtException.message, events.uncaughtException.fn);
   }
+
+  // TODO relocate to a different utilities module. This is for events mainly.
+  export function handleServerErrorToClient(error: any, socketCallback: (error: any, result?: any) => void) {
+    log.error(error);
+    // TODO other handling required?
+    socketCallback(error);
+  }
 }
 
 export = UtilityEvents;
