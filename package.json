@@ -12,11 +12,10 @@
   ],
   "dependencies": {
     "express": "4.9.8",
-    "mongoose": "^3.8.18",
     "socket.io": "^1.2.1",
     "bunyan": "^1.2.3",
     "q": "^1.1.2",
-    "mongojs": "^0.18.0"
+    "mongodb": "^1.4.26"
   },
   "devDependencies": {
     "gulp": "3.8.8",

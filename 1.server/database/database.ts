@@ -1,4 +1,4 @@
-import mongo = require("mongoose");
+import mongo = require("mongojs");
 
 /**
  * @class Database.
