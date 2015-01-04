@@ -11,7 +11,7 @@ declare module "mongodb" {
 
   // Class documentation : http://mongodb.github.io/node-mongodb-native/api-generated/mongoclient.html
   export class MongoClient{
-    constructor(serverConfig: any, options: any);
+    constructor(serverConfig: any, options?: any);
 
     static connect(uri: string, options: any, callback: (err: Error, db: Db) => void): void;
     static connect(uri: string, callback: (err: Error, db: Db) => void): void;
