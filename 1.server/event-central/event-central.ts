@@ -57,7 +57,12 @@ module EventCentral {
             // add all specific events to this socket
             Object.keys(socketEvents).forEach((key: string) => { 
                 log.debug("Event added to socket.", { eventName: key, id: socket.id });
-                socketEvents[key].forEach((onEventCallback: any) => { socket.on(key, onEventCallback) });
+                socketEvents[key].forEach((onEventCallback: any) => { 
+                    socket.on(key, 
+                        (parameters: any, socketCallback: (error: any, result?: any) => void) => {
+                            onEventCallback(socket, parameters, socketCallback);
+                        });
+                });
             });
 
             socket.on(constants.socketEvents.disconnected, () => {
@@ -77,19 +82,27 @@ module EventCentral {
      */ 
     var connectClientLogging = () => {
         // connect client side logging into the log system
-        addSocketEventListener(constants.socketEvents.log.debug, (parameters: any) => { 
-            log.client(constants.logLevels.debug, parameters.message, parameters.meta); 
-        });
+        addSocketEventListener(constants.socketEvents.log.debug, 
+            (socket: SocketIO.Socket, parameters: any, socketCallback: (error: any, result?: any) => void) => { 
+                
+                log.client(constants.logLevels.debug, parameters.message, parameters.meta); 
+            });
 
-        addSocketEventListener(constants.socketEvents.log.info, (parameters: any) => { 
+        addSocketEventListener(constants.socketEvents.log.info, 
+            (socket: SocketIO.Socket, parameters: any, socketCallback: (error: any, result?: any) => void) => { 
+                
             log.client(constants.logLevels.info, parameters.message, parameters.meta); 
         });
 
-        addSocketEventListener(constants.socketEvents.log.warning, (parameters: any) => { 
+        addSocketEventListener(constants.socketEvents.log.warning, 
+            (socket: SocketIO.Socket, parameters: any, socketCallback: (error: any, result?: any) => void) => { 
+                
             log.client(constants.logLevels.warning, parameters.message, parameters.meta); 
         });
 
-        addSocketEventListener(constants.socketEvents.log.error, (parameters: any) => { 
+        addSocketEventListener(constants.socketEvents.log.error, 
+            (socket: SocketIO.Socket, parameters: any, socketCallback: (error: any, result?: any) => void) => { 
+                
             log.client(constants.logLevels.error, parameters.message, parameters.meta); 
         });
     };
@@ -112,11 +125,24 @@ module EventCentral {
      * @param eventName {string} Name of the socket event to listen for.
      * @param eventHandlerFunction {any} Callback to call once the event triggers
      */
-    export function addSocketEventListener(eventName: string, eventHandlerFunction: any) {
+    export function addSocketEventListener(
+            eventName: string, 
+            eventHandlerFunction: (
+                socket: SocketIO.Socket, 
+                options: any, 
+                resultHandler: (error: any, result?: any) => void
+            ) => void
+        ) {
+
         storeSocketEvent(eventName, eventHandlerFunction);
 
         if (sockets.length > 0) {
-            sockets.forEach((socket: any) => { socket.on(eventName, eventHandlerFunction); });
+            sockets.forEach((socket: any) => { 
+                socket.on(eventName, 
+                    (parameters: any, socketCallback: (error: any, result?: any) => void) => {
+                        eventHandlerFunction(socket, parameters, socketCallback);
+                    });
+            });
         }
     }
 
