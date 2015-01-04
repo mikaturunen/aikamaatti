@@ -1,0 +1,6 @@
+
+module Employees {
+    
+}
+
+export = Employees;
