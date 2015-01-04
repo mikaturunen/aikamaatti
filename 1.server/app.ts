@@ -11,6 +11,9 @@ import path = require("path");
 import Q = require("q");
 import http = require("http");
 
+// DATABASE CONNECTIONS
+import database = require("./database/database");
+
 // HTTP ROUTES
 import databaseRoutes = require("./database/database-routes");
 
@@ -24,6 +27,7 @@ import employeesSockets = require("./employees/employees-socket");
 //      chain.
 
 var generateDefaultExpress = () => {
+    log.info("Setting up default Express application");
     var deferred = <Q.Deferred<express.Application>> Q.defer();
 
     var app = express();
@@ -34,6 +38,7 @@ var generateDefaultExpress = () => {
 };
 
 var setHttpRoutes = (app: express.Application) => {
+    log.info("Setting up HTTP routes.");
     var deferred = <Q.Deferred<express.Application>> Q.defer();
 
     // building an array out of the actual http route descriptions - compile time check that we have all necessary
@@ -52,7 +57,21 @@ var setHttpRoutes = (app: express.Application) => {
     return deferred.promise;
 };
 
+var openDatabaseConnections = (app: express.Application) => {
+    log.info("Setting up database connections.");
+    var deferred = <Q.Deferred<express.Application>> Q.defer();
+
+    database
+        .init()
+        .then(() => deferred.resolve(app))
+        .catch(deferred.reject)
+        .done();
+
+    return deferred.promise;
+};
+
 var startExpressServer = (app: express.Application) => {
+    log.info("Starting up Express.");
     var deferred = <Q.Deferred<http.Server>> Q.defer();
 
     // TODO read details from configuration file
@@ -60,15 +79,16 @@ var startExpressServer = (app: express.Application) => {
         log.info("Server running.", { port: server.address().port });
     });
 
-    eventCentral.init(server);
     deferred.resolve(server);
 
     return deferred.promise;
 };
 
 var setSocketEvents = (server: http.Server) => {
+    log.info("Setting up Socket events.");
     var deferred = <Q.Deferred<http.Server>> Q.defer();
 
+    eventCentral.init(server);
     // building an array out of the actual socket event descriptions - compile time check that we have all necessary
     // functions in place
     var socketEvents: SocketRouteDefinition[] = [ databaseSockets, employeesSockets ];
@@ -87,6 +107,7 @@ var errorStartingApplication = (error: any) => {
 // execute the chain and run the application
 generateDefaultExpress()
     .then(app => setHttpRoutes(app))
+    .then(app => openDatabaseConnections(app))
     .then(app => startExpressServer(app))
     .then(server => setSocketEvents(server))
     .catch(errorStartingApplication)
