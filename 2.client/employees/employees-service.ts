@@ -19,11 +19,19 @@ module Employees {
   };
 
   var service = (socket: any, log: Log.Service) => {
-    var add = (employees: EmployeeModel[]) : Q.Promise<EmployeeModel[]>=> {
+    var add = (employees: EmployeeModel[]) : Q.Promise<EmployeeModel[]> => {
       var deferred = <Q.Deferred<EmployeeModel[]>> Q.defer();
 
       log.info("Sending Employees to server.", { employeesCount: employees.length });
-      socket.emit(constants.socketEvents.employees.add, employees);
+
+      socket.emit(constants.socketEvents.employees.add, employees, (error: any, response: EmployeeModel[]) => {
+        if (error) {
+          deferred.reject(error);
+          return;
+        }
+
+        deferred.resolve(response);
+      });
 
       return deferred.promise;
     };

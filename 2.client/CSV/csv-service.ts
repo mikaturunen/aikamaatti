@@ -17,8 +17,8 @@ module Csv {
     declare var Papa: any;
 
     export interface Service {
-        importEmployees:  ($files: any) => void;
-        importTreatments: ($files: any) => void;
+        importEmployees:  ($files: any) => Q.Promise<EmployeeModel[]>;
+        importTreatments: ($files: any) => Q.Promise<TreatmentModel[]>;
     }
 
     // TODO write mapping tools for both the employee and treatments csv imports
@@ -71,7 +71,7 @@ module Csv {
      * @params rows {any} Rows from CSV
      * @params log {Log.Service} Log service.
      */
-    var employeeTransofmer = (rows: any, log: Log.Service) => {
+    var employeeTransformer = (rows: any, log: Log.Service) => {
         // Even though this function is synchronous we use Q to allow the us to use the function inside a promise chain
         var deferred = <Q.Deferred<EmployeeModel[]>> Q.defer();
 
@@ -97,7 +97,7 @@ module Csv {
      * @params rows {any} Rows from CSV
      * @params log {Log.Service} Log service.
      */
-    var treatmentsTransofmer = (rows: any, log: Log.Service) => {
+    var treatmentsTransformer = (rows: any, log: Log.Service) => {
         // TODO replace completely with a proper mapping instead of hard-coded values,
         //      this is here just to move the development and prototyping along faster so we can
         //      actually test the programs idea instead of get stuck on details like this...
@@ -131,13 +131,12 @@ module Csv {
          * @params $files {any} List of files from HTML5 file api that the user selected.
          */ 
         var importEmployees = ($files: any) => {  
-            // TODO type the deferred
             var deferred = <Q.Deferred<EmployeeModel[]>> Q.defer();
 
             // read file content, convert them to employees, send them to server and resolve promise on reply
 
             parseFile($files)
-                .then((content: { results: any; file: string; }) => convertRowsToModels(content, log, employeeTransofmer))
+                .then((content: { results: any; file: string; }) => convertRowsToModels(content, log, employeeTransformer))
                 .then((employees: EmployeeModel[]) => employeesService.add(employees))
                 .then(deferred.resolve)
                 .catch(deferred.reject)

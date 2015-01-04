@@ -12,6 +12,8 @@ module EmployeesController {
     importEmployeesCsv: ($files: any[]) => void;    // exports a list of employees (including groups) from a csv 
                                                     // file
     importTreatmentsCsv: ($files: any[]) => void;   // exports a list of treatments from CSV file
+    employees: EmployeeModel[];                     // list of employees
+    treatments: TreatmentModel[];                   // list of available Treatments
   };
 
   // The actual controller function that takes in what dependencies were injected.
@@ -28,7 +30,17 @@ module EmployeesController {
 
     $scope.importEmployeesCsv = ($files: any) => {
       log.debug("Exporting employees from CSV file.", { filesCount: $files.length });
-      csv.importEmployees($files);
+      csv
+        .importEmployees($files)
+        .then((employees: EmployeeModel[]) => {
+          log.debug("Imported employees successfully.", { employeeCount: employees.length });
+          Array.prototype.push.apply($scope.employees, employees);
+        })
+        .catch((error: any) => {
+          // TODO handle the error properly 
+          log.error(error, { message: error.message, meta: error });
+        })
+        .done();
     };
 
     $scope.importTreatmentsCsv = ($files: any) => {
