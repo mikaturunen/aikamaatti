@@ -29,8 +29,4 @@ module DatabaseSocket {
   }
 }
 
-// This small block will throw error if the above module does not follow the strict HttpRouteDefinition interface :)
-// In TypeScript Version 1.1.0.1 you still cannot force modules to follow/adhere interfaces, so we'll do it this way.
-module interfaceCheck { var isOk: SocketRouteDefinition = DatabaseSocket; }
-
 export = DatabaseSocket;

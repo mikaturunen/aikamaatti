@@ -7,11 +7,9 @@ import eventCentral = require("./event-central/event-central");
 import express = require("express");
 import path = require("path");
 
-
 // Example of adding dynamic http routes
 import databaseRoutes = require("./database/database-routes");
-// Example of adding dynamic socket routes
-import databaseSockets = require("./database/database-socket");
+
 var app = express();
 
 app.use("/public", express.static(path.normalize(path.join(__dirname, "..", "client"))));
@@ -32,7 +30,14 @@ var server = app.listen(3000, "127.0.0.1", () => {
 
 eventCentral.init(server);
 
-// applying dynamic routes to the socket server
-databaseSockets.init();
+// Example of adding dynamic socket routes
+import databaseSockets = require("./database/database-socket");
+import employeesSockets = require("./employees/employees-socket");
+// building an array out of the actual socket event descriptions - compile time check that we have all necessary
+// functions in place
+var socketEvents: SocketRouteDefinition[] = [ databaseSockets, employeesSockets ];
+// hook all the events in place
+socketEvents.forEach(socketEvent => socketEvent.init());
+
 
 
