@@ -3,7 +3,7 @@
 import utilityEvents = require("./utilities/utility-events");
 utilityEvents.hook();
 
-// COMMON 
+// COMMON
 import log = require("./log/log");
 import eventCentral = require("./event-central/event-central");
 import express = require("express");
@@ -31,7 +31,7 @@ var generateDefaultExpress = () => {
     var deferred = <Q.Deferred<express.Application>> Q.defer();
 
     var app = express();
-    app.use("/public", express.static(path.normalize(path.join(__dirname, "..", "client"))));
+    app.use("/public", express.static(path.normalize(path.join(__dirname, "..", "2.client"))));
     deferred.resolve(app);
 
     return deferred.promise;
@@ -46,9 +46,9 @@ var setHttpRoutes = (app: express.Application) => {
     var httpRoutes: HttpRouteDefinition[] = [ databaseRoutes ];
     httpRoutes.forEach(httpRoute => httpRoute.init(app));
 
-    // From all other routes we return index.html for now... 
+    // From all other routes we return index.html for now...
     app.get("*", (req: any, res: any) => {
-      var indexHtml: string = path.join(__dirname, "..", "client", "html", "index.html");
+        var indexHtml: string = path.join(__dirname, "..", "client", "html", "index.html");
         res.sendFile(indexHtml);
     });
 
@@ -112,7 +112,3 @@ generateDefaultExpress()
     .then(server => setSocketEvents(server))
     .catch(errorStartingApplication)
     .done();
-
-
-
-
