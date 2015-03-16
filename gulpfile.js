@@ -165,13 +165,12 @@ gulp.task(taskNpm, function() {
      return gulp.src(["./package.json"]).pipe(install());
 });
 
-gulp.task("copy", function() {
-    return gulp.src("./2.client/**/*.*")
+gulp.task("copy-client", function() {
+    return gulp.src("./client/**/*.*")
         .pipe(copy("./release/"));
 });
-gulp.task("rename", function() {
-    return gulp.src("./release/2.client/")
-		.pipe(rename("/client"))
+gulp.task("copy-server", function() {
+    return gulp.src("./server/**/*.*")
         .pipe(copy("./release/"));
 });
 
