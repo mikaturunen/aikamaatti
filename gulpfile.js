@@ -1,11 +1,12 @@
 /**
- * Gulp usage file for the whole project. 
+ * Gulp usage file for the whole project.
  * Usage cases: Compiling all the typescript files.
  */
- 
+
 "use strict";
 
 var gulp = require("gulp");
+var rename = require("gulp-rename");
 var ts = require("gulp-typescript");
 var eventStream = require("event-stream");
 var jade = require("gulp-jade");
@@ -19,6 +20,7 @@ var browserify = require("browserify");
 var tsify = require("tsify");
 var source = require("vinyl-source-stream");
 var buffer = require("vinyl-buffer");
+var copy = require("gulp-copy");
 
 // common target locations
 var serverReleaseLocation = "./release/server";
@@ -76,7 +78,7 @@ var tscClientOptions = {
     showErrors: true
 };
 
-// List of gulp tasks. Aim is to chop the individual tasks into as small chunks as possible and allow 
+// List of gulp tasks. Aim is to chop the individual tasks into as small chunks as possible and allow
 // gulp and associated set of tools take care of speed.
 // NOTE turn into parallel tasks where possible if speed every becomes a factor
 
@@ -94,9 +96,9 @@ gulp.task(taskBrowserifyClient, function() {
     console.log("Browesrify TS from: " + JSON.stringify(typeDefinitionsBrowserify, null, 2));
 
     var bundler = browserify({
-        entries: [ 
-            path.join(__dirname, "definitions/client.d.ts"), 
-            path.join(__dirname, "2.client/index.ts") 
+        entries: [
+            path.join(__dirname, "definitions/client.d.ts"),
+            path.join(__dirname, "2.client/index.ts")
         ],
         debug: false
     });
@@ -145,7 +147,7 @@ gulp.task(taskTscServer, function() {
 });
 
 gulp.task(taskTscClient, function() {
-    console.log("Listed definitions to add for client compilation: " + JSON.stringify(typeDefinitionsClient, null, 2));                        
+    console.log("Listed definitions to add for client compilation: " + JSON.stringify(typeDefinitionsClient, null, 2));
     var tsClientResult = gulp.src(typeDefinitionsClient)
                             .pipe(ts(tscClientOptions));
 
@@ -163,20 +165,29 @@ gulp.task(taskNpm, function() {
      return gulp.src(["./package.json"]).pipe(install());
 });
 
+gulp.task("copy", function() {
+    return gulp.src("./2.client/**/*.*")
+        .pipe(copy("./release/"));
+});
+gulp.task("rename", function() {
+    return gulp.src("./release/2.client/")
+		.pipe(rename("/client"))
+        .pipe(copy("./release/"));
+});
+
 gulp.task(taskBuild, function() {
     sequence(
-            [ taskJade, taskTslintServer, taskTslintClient ],
-            [ taskTscServer, taskTscClient ],
-            taskBrowserifyClient,
-            taskUglifyJs
-        );
+        [ taskJade, taskTslintServer ],
+        [ taskTscServer ]
+
+    );
 });
 
 // defining the tasks gulp runs -- in default we do basically all the tasks in one
 gulp.task("default", function() {
     sequence(
-            taskNpm, 
-            taskBower, 
+            taskNpm,
+            taskBower,
             [ taskJade, taskTslintServer, taskTslintClient ],
             [ taskTscServer, taskTscClient ],
             taskBrowserifyClient,
