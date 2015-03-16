@@ -1,0 +1,17 @@
+<link rel="import" href="/public/bower/polymer/polymer.html">
+
+<polymer-element name="ready-element">
+    <template>
+        <span>I'm <b>ready-element</b>. This element has .ready()!</span>
+        <span id="el">Not ready...</span>
+    </template>
+    <script>
+        Polymer({
+            owner: "Marko",
+            ready: function() {
+                this.$.el.textContent = this.owner + "is ready!";
+                console.log("ready-element is ready");
+            }
+        });
+    </script>
+</polymer-element>
